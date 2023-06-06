@@ -130,7 +130,6 @@ public class PlayerShoot : MonoBehaviour
 
     IEnumerator DestroyLineRenderer()
     {
-        Debug.Log("Entrou");
         yield return new WaitForSeconds(0.1f);
         lineRenderer.enabled = false;
     }
