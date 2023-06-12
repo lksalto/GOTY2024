@@ -18,11 +18,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] List<Sprite> playerSprites;
     [SerializeField] SpriteRenderer handsSprites;
     //Jump
-    [SerializeField] bool canJump;
+    [SerializeField] bool bCanJump;
     [SerializeField] float jumpCoolDown = 1.5f;
     [SerializeField] float jumpTimer;
+    [SerializeField] float jumpForce;
+    [SerializeField] int jumpCounter = 1;
+    [SerializeField] int maxJumpCounter = 1;
     public float moveSpeed = 5;
-    public float jumpForce = 5;
+    public float fJumpForce = 5;
 
     float moveDirection;
 
@@ -36,6 +39,15 @@ public class PlayerMovement : MonoBehaviour
     public float dodgeDuration = 0.2f;
     public float dodgeCooldown = 1;
     public float dodgeTimer = 0;
+    //Debugger
+    [SerializeField] bool debugColor;
+    [SerializeField] float comp;
+    [SerializeField] float rayX;
+    [SerializeField] bool rocketJump = true;
+    [SerializeField] int rocketCount;
+    [SerializeField] int rocketMax;
+    [SerializeField] SpriteRenderer sprite;
+
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         ManageCooldowns();
+        Debugger();
         Turn();
         if (!Input.GetButton("Fire1"))
         {
@@ -62,11 +75,11 @@ public class PlayerMovement : MonoBehaviour
                 Move();
             }
 
-            if (Input.GetKeyDown(KeyCode.W) && canJump)
+            if (Input.GetButtonDown("Jump"))
             {
                 Jump();
             }
-            if (Input.GetButtonDown("Jump") && canDodge)
+            if (Input.GetKeyDown(KeyCode.Mouse1) && canDodge)
             {
                 StartCoroutine(Dodge());
             }
@@ -84,30 +97,120 @@ public class PlayerMovement : MonoBehaviour
 
         moveDirection = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
+
     }
-    private void Jump()
+    void Jump()
     {
-        if (canJump)
-            jumpTimer = jumpCoolDown;
-            canJump = false;
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        if(jumpCounter > 0)
+        {
+            rb.velocity = Vector2.zero;
+            rb.AddForce(new Vector2(0f, fJumpForce), ForceMode2D.Impulse);
+            jumpCounter--;
+        }
+
+    }
+
+    void Debugger()
+    {
+        RaycastHit2D[] hits;
+        RaycastHit2D[] hitsL;
+        RaycastHit2D[] hitsR;
+        hits = Physics2D.RaycastAll(transform.position, -transform.up, comp);
+        hitsL = Physics2D.RaycastAll(new Vector2(transform.position.x - rayX, transform.position.y), -transform.up, comp);
+        hitsR = Physics2D.RaycastAll(new Vector2(transform.position.x + rayX, transform.position.y), -transform.up, comp);
+        bool isGrounded = false;
+        Debug.DrawRay(new Vector2(transform.position.x, transform.position.y), -transform.up * comp);
+        Debug.DrawRay(new Vector2(transform.position.x - rayX, transform.position.y), -transform.up * comp);
+        Debug.DrawRay(new Vector2(transform.position.x + rayX, transform.position.y), -transform.up * comp);
+
+        // For each object that the raycast hits.
+        for (int i = 0; i < hits.Length; i++)
+        {
+            RaycastHit2D hit = hits[i];
+            //if (hit.collider.CompareTag("Floor")|| )
+            //{
+
+                if (transform.position.y > hit.collider.transform.position.y)
+                    isGrounded = true;
+
+                //Debug.Log("mid");
+                //bCanJump = true;
+                //rocketJump = true;
+            //}
+
+        }
+        for (int i = 0; i < hitsL.Length; i++)
+        {
+            RaycastHit2D hitL = hitsL[i];
+            //if (hitL.collider.CompareTag("Floor"))
+            //{
+
+                if (transform.position.y > hitL.collider.transform.position.y + hitL.collider.transform.localScale.y / 2)
+                    isGrounded = true;
+
+                //Debug.Log("left");
+                //bCanJump = true;
+                //rocketJump = true;
+
+            //}
+
+        }
+        for (int i = 0; i < hitsR.Length; i++)
+        {
+            RaycastHit2D hitR = hitsR[i];
+            //if (hitR.collider.CompareTag("Floor"))
+            //{
+
+                if (transform.position.y > hitR.collider.transform.position.y + hitR.collider.transform.localScale.y / 2)
+                    isGrounded = true;
+
+                //Debug.Log("right");
+                //bCanJump = true;
+                //rocketJump = true;
+            //}
+        }
+        if (debugColor)
+        {
+            if(jumpCounter == maxJumpCounter)
+            {
+                sr.color = Color.green;
+            }
+            else if(jumpCounter > 0)
+            {
+                sr.color = Color.yellow;
+            }
+            else
+            {
+                sprite.color = Color.red;
+            }
+            
+        }
+
+
+        bCanJump = isGrounded;
+        if (bCanJump)
+        {
+            canDodge = true;
+            jumpCounter = maxJumpCounter;
+        }
+        rocketJump = !isGrounded;
     }
     IEnumerator Dodge()
     {
-        sr.color = Color.red;
+        sr.color = Color.yellow;
         canDodge = false;
         canMove = false;
         rb.gravityScale = 0;
         rb.velocity = new Vector2(rb.velocity.x, 0);
         //rb.isKinematic = true;
         //cc2d.enabled = false;
-        rb.AddForce(new Vector2(moveDirection, 0) * jumpForce * 2, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(moveDirection, 0) * jumpForce/1.7f, ForceMode2D.Impulse);
         
         yield return new WaitForSeconds(dodgeDuration);
         rb.gravityScale = 1;
         sr.color = Color.white;
         canMove = true;
-        canDodge = true;
+        
         //cc2d.enabled = true;
         //rb.isKinematic = true
 
@@ -115,10 +218,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void ManageCooldowns()
     {
-        dodgeTimer -= Time.deltaTime;
-        canDodge = dodgeTimer < 0;
+        //dodgeTimer -= Time.deltaTime;
+        //canDodge = dodgeTimer < 0;
         jumpTimer -= Time.deltaTime;
-        canJump = jumpTimer < 0;
     }
 
     private void Aim()
@@ -150,7 +252,6 @@ public class PlayerMovement : MonoBehaviour
         //hands.transform.localScale = new Vector3(myPlayer.transform.localScale.x, 1, 1);
         if (angleAim > 90 || angleAim < -90)
         {
-            Debug.Log("FLIPOU");
             handsSprites.flipY = true;
         }
         hands.transform.rotation = rotation;
