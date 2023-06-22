@@ -64,9 +64,9 @@ public class PlayerShoot : MonoBehaviour
         if (hits.Length > 0)
         {
             isHitting = true;
-            // Find the closest hit within the desired layer
+            
             float closestDistance = Mathf.Infinity;
-            //Vector3 closestHitPoint = Vector3.zero;
+            
             Vector2 closestHitNormal = Vector2.zero;
 
             for (int i = 0; i < hits.Length; i++)
@@ -81,42 +81,19 @@ public class PlayerShoot : MonoBehaviour
                 }
             }
 
-            // Set the ending point of the line renderer to the closest hit point
             lineRenderer.SetPosition(1, closestHitPoint);
-
-            // Get the hit object from the collider
             GameObject hitObject = hits[0].collider.gameObject;
-
-            // Check if the hit object has the desired tag or perform additional checks
-            if (hitObject.CompareTag("Floor") || hitObject.CompareTag("Enemy"))
-            {
-                // Code for hitting an object with the "Floor" tag
-                Debug.Log("Hit floor!");
-
-                // Fixed angle of 45 degrees
-                angleVect = transform.position - closestHitPoint;
-
-                angle = Mathf.Atan2(angleVect.y, angleVect.x) * Mathf.Rad2Deg;
-
-                // Spawn the projectile at the hit point with the fixed angle
-                rotation = Quaternion.Euler(0f, 0f, angle);
-                
-            }
-
-
-            // Get the hit point in world space
+            angleVect = transform.position - closestHitPoint;
+            angle = Mathf.Atan2(angleVect.y, angleVect.x) * Mathf.Rad2Deg;
+            rotation = Quaternion.Euler(0f, 0f, angle);
             Vector3 hitPoint = closestHitPoint;
 
-            // Perform actions based on the hit point
-            // ...
         }
         else
         {
             isHitting = false;
             angleVect = transform.position - endPoint;
             angle = Mathf.Atan2(angleVect.y, angleVect.x) * Mathf.Rad2Deg;
-
-
             // Spawn the projectile at the hit point with the fixed angle
             rotation = Quaternion.Euler(0f, 0f, angle);
             // If the ray doesn't hit anything, set the ending point of the line renderer to the maximum distance

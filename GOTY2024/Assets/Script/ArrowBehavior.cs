@@ -23,21 +23,6 @@ public class ArrowBehavior : MonoBehaviour
         }
         else if(collision.gameObject.CompareTag("Enemy"))
         {
-            /*// Assuming you have references to the parent and child objects
-            Transform parentTransform = collision.transform;
-            Transform childTransform = gameObject.transform;
-
-            // Get the child's local position, rotation, and scale
-            Vector3 childLocalPosition = childTransform.localPosition;
-            Quaternion childLocalRotation = childTransform.localRotation;
-            Vector3 childLocalScale = childTransform.localScale;
-
-            // Set the parent of the child object           
-
-            // Reset the child's local position, rotation, and scale to maintain its properties
-            childTransform.localPosition = childLocalPosition;
-            childTransform.localRotation = childLocalRotation;
-            childTransform.localScale = childLocalScale;*/
 
             gameObject.transform.SetParent(collision.gameObject.transform);
 

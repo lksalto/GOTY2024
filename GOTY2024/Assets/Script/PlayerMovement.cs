@@ -41,12 +41,12 @@ public class PlayerMovement : MonoBehaviour
     public float dodgeTimer = 0;
     //Debugger
     [SerializeField] bool debugColor;
+    [SerializeField] bool isOnPlatform;
     [SerializeField] float comp;
     [SerializeField] float rayX;
-    [SerializeField] bool rocketJump = true;
-    [SerializeField] int rocketCount;
-    [SerializeField] int rocketMax;
     [SerializeField] SpriteRenderer sprite;
+    [SerializeField] float platformTimer = 0.3f;
+
 
 
     // Start is called before the first frame update
@@ -69,13 +69,13 @@ public class PlayerMovement : MonoBehaviour
         Turn();
         if (!Input.GetButton("Fire1"))
         {
-            Disarm() ;
+            Disarm();
             if (canMove)
             {
                 Move();
             }
 
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetKeyDown(KeyCode.W))
             {
                 Jump();
             }
@@ -83,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartCoroutine(Dodge());
             }
+            
         }
         else
         {
@@ -103,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(jumpCounter > 0)
         {
-            rb.velocity = Vector2.zero;
+            rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(new Vector2(0f, fJumpForce), ForceMode2D.Impulse);
             jumpCounter--;
         }
@@ -127,47 +128,45 @@ public class PlayerMovement : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             RaycastHit2D hit = hits[i];
-            //if (hit.collider.CompareTag("Floor")|| )
-            //{
+            if (hit.collider.CompareTag("Floor"))
+            {
 
                 if (transform.position.y > hit.collider.transform.position.y)
                     isGrounded = true;
+            }
+            if(hit.collider.CompareTag("Platform"))
+            {
+                isOnPlatform = true;
+                if (Input.GetKey(KeyCode.S))
+                {
 
-                //Debug.Log("mid");
-                //bCanJump = true;
-                //rocketJump = true;
-            //}
+                    StartCoroutine(DisablePlatform(hit.collider.gameObject.GetComponent<BoxCollider2D>()));
+ 
+                }
+            }
 
         }
         for (int i = 0; i < hitsL.Length; i++)
         {
             RaycastHit2D hitL = hitsL[i];
-            //if (hitL.collider.CompareTag("Floor"))
-            //{
+            if (hitL.collider.CompareTag("Floor") || hitL.collider.CompareTag("Platform"))
+            {
 
                 if (transform.position.y > hitL.collider.transform.position.y + hitL.collider.transform.localScale.y / 2)
                     isGrounded = true;
 
-                //Debug.Log("left");
-                //bCanJump = true;
-                //rocketJump = true;
-
-            //}
-
+            }
         }
         for (int i = 0; i < hitsR.Length; i++)
         {
             RaycastHit2D hitR = hitsR[i];
-            //if (hitR.collider.CompareTag("Floor"))
-            //{
+            if (hitR.collider.CompareTag("Floor") || hitR.collider.CompareTag("Platform"))
+            {
 
-                if (transform.position.y > hitR.collider.transform.position.y + hitR.collider.transform.localScale.y / 2)
+            if (transform.position.y > hitR.collider.transform.position.y + hitR.collider.transform.localScale.y / 2)
                     isGrounded = true;
 
-                //Debug.Log("right");
-                //bCanJump = true;
-                //rocketJump = true;
-            //}
+            }
         }
         if (debugColor)
         {
@@ -185,15 +184,19 @@ public class PlayerMovement : MonoBehaviour
             }
             
         }
-
-
         bCanJump = isGrounded;
         if (bCanJump)
         {
             canDodge = true;
             jumpCounter = maxJumpCounter;
         }
-        rocketJump = !isGrounded;
+    }
+
+    IEnumerator DisablePlatform(BoxCollider2D bc)
+    {
+        Physics2D.IgnoreCollision(bc, gameObject.GetComponent<BoxCollider2D>(), true);
+        yield return new WaitForSeconds(platformTimer);
+        Physics2D.IgnoreCollision(bc, gameObject.GetComponent<BoxCollider2D>(), false);
     }
     IEnumerator Dodge()
     {
@@ -202,24 +205,15 @@ public class PlayerMovement : MonoBehaviour
         canMove = false;
         rb.gravityScale = 0;
         rb.velocity = new Vector2(rb.velocity.x, 0);
-        //rb.isKinematic = true;
-        //cc2d.enabled = false;
         rb.AddForce(new Vector2(moveDirection, 0) * jumpForce/1.7f, ForceMode2D.Impulse);
-        
         yield return new WaitForSeconds(dodgeDuration);
         rb.gravityScale = 1;
         sr.color = Color.white;
         canMove = true;
-        
-        //cc2d.enabled = true;
-        //rb.isKinematic = true
-
     }
 
     private void ManageCooldowns()
     {
-        //dodgeTimer -= Time.deltaTime;
-        //canDodge = dodgeTimer < 0;
         jumpTimer -= Time.deltaTime;
     }
 
@@ -232,7 +226,6 @@ public class PlayerMovement : MonoBehaviour
         angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
         rotationZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        //hands.transform.localScale = new Vector3(myPlayer.transform.localScale.x, 1, 1);
         hands.transform.rotation = rotation;
         handsSprites.flipX = (angle > 90 || angle < -90);
     }
@@ -242,14 +235,11 @@ public class PlayerMovement : MonoBehaviour
         hands.SetActive(false);
         sr.sprite = playerSprites[0];
         hands.GetComponent<SpriteRenderer>().sprite = armDisarm[0];
-        
         dir = Vector2.down;
         angle = -90 * Mathf.Rad2Deg;
         rotation = Quaternion.AngleAxis(angle,new Vector3(0,0,1));
         angleAim = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         dirAim = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        //rotationZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        //hands.transform.localScale = new Vector3(myPlayer.transform.localScale.x, 1, 1);
         if (angleAim > 90 || angleAim < -90)
         {
             handsSprites.flipY = true;
@@ -260,9 +250,7 @@ public class PlayerMovement : MonoBehaviour
     {
         dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        
         sr.flipX = (angle > 90 || angle < -90);
-        
     }
 
     public void ResetTransform()
