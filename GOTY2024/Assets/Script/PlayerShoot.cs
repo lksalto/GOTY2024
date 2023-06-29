@@ -107,7 +107,7 @@ public class PlayerShoot : MonoBehaviour
 
     IEnumerator DestroyLineRenderer()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0f);
         lineRenderer.enabled = false;
     }
 
