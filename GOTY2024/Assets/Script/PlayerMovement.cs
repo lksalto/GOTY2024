@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] bool bCanJump;
     [SerializeField] float jumpCoolDown = 1.5f;
     [SerializeField] float jumpTimer;
-    [SerializeField] float jumpForce;
     [SerializeField] int jumpCounter = 1;
     [SerializeField] int maxJumpCounter = 1;
     public float moveSpeed = 5;
@@ -102,11 +101,10 @@ public class PlayerMovement : MonoBehaviour
     }
     void Jump()
     {
-        if(jumpCounter > 0)
+        if(bCanJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(new Vector2(0f, fJumpForce), ForceMode2D.Impulse);
-            jumpCounter--;
         }
 
     }
@@ -170,13 +168,9 @@ public class PlayerMovement : MonoBehaviour
         }
         if (debugColor)
         {
-            if(jumpCounter == maxJumpCounter)
+            if(isGrounded)
             {
                 sr.color = Color.green;
-            }
-            else if(jumpCounter > 0)
-            {
-                sr.color = Color.yellow;
             }
             else
             {
@@ -188,7 +182,6 @@ public class PlayerMovement : MonoBehaviour
         if (bCanJump)
         {
             canDodge = true;
-            jumpCounter = maxJumpCounter;
         }
     }
 
@@ -205,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
         canMove = false;
         rb.gravityScale = 0;
         rb.velocity = new Vector2(rb.velocity.x, 0);
-        rb.AddForce(new Vector2(moveDirection, 0) * jumpForce/1.7f, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(moveDirection, 0) * fJumpForce/1.7f, ForceMode2D.Impulse);
         yield return new WaitForSeconds(dodgeDuration);
         rb.gravityScale = 1;
         sr.color = Color.white;
