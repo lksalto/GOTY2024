@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4452331232223267531}
-  - component: {fileID: 4452331232223267532}
-  - component: {fileID: 4452331232223267533}
   - component: {fileID: 4452331232223267529}
   - component: {fileID: 4452331232223267528}
+  - component: {fileID: 4452331232223267533}
   - component: {fileID: 4452331232223267527}
+  - component: {fileID: 4452331232223267532}
   - component: {fileID: 4452331232223267530}
   - component: {fileID: 4452331232223267526}
   m_Layer: 10
@@ -41,73 +41,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4452331232223267532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4452331232223267535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f8a0b903a54ff14281200dd0a35aa46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hands: {fileID: 4452331234097414763}
-  armDisarm:
-  - {fileID: 1278672994, guid: 2f08b566795669f468bd419c99b5ad26, type: 3}
-  - {fileID: -1677373774, guid: 2f08b566795669f468bd419c99b5ad26, type: 3}
-  playerSprites:
-  - {fileID: 1085859704, guid: d61b58194491bb0409e3c83cbe12aa50, type: 3}
-  - {fileID: -54930087, guid: d61b58194491bb0409e3c83cbe12aa50, type: 3}
-  handsSprites: {fileID: 4452331234097414761}
-  bCanJump: 1
-  jumpCoolDown: 0
-  jumpTimer: 0
-  jumpCounter: 1
-  maxJumpCounter: 1
-  moveSpeed: 6.5
-  fJumpForce: 9
-  sr: {fileID: 4452331233888646806}
-  canDodge: 1
-  canMove: 1
-  dodgeDuration: 0.3
-  dodgeCooldown: 1.5
-  dodgeTimer: 0
-  dodgeLayers:
-  - serializedVersion: 2
-    m_Bits: 1024
-  - serializedVersion: 2
-    m_Bits: 64
-  - serializedVersion: 2
-    m_Bits: 2048
-  debugColor: 0
-  isOnPlatform: 0
-  comp: 0.88
-  rayX: 0.5
-  sprite: {fileID: 4452331233888646806}
-  platformTimer: 0.3
---- !u!50 &4452331232223267533
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4452331232223267535}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 84107f44fb0af3145a5473562487b031, type: 2}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 4
 --- !u!120 &4452331232223267529
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -242,6 +175,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5103221, y: 0.6044907}
   m_EdgeRadius: 0
+--- !u!50 &4452331232223267533
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4452331232223267535}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 3
+  m_Material: {fileID: 6200000, guid: 84107f44fb0af3145a5473562487b031, type: 2}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!114 &4452331232223267527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +212,52 @@ MonoBehaviour:
   lowJumpMultiplier: 5
   goDown: 5
   player: {fileID: 4452331232223267532}
+--- !u!114 &4452331232223267532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4452331232223267535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8a0b903a54ff14281200dd0a35aa46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hands: {fileID: 4452331234097414763}
+  armDisarm:
+  - {fileID: 1278672994, guid: 2f08b566795669f468bd419c99b5ad26, type: 3}
+  - {fileID: -1677373774, guid: 2f08b566795669f468bd419c99b5ad26, type: 3}
+  playerSprites:
+  - {fileID: 1085859704, guid: d61b58194491bb0409e3c83cbe12aa50, type: 3}
+  - {fileID: -54930087, guid: d61b58194491bb0409e3c83cbe12aa50, type: 3}
+  handsSprites: {fileID: 4452331234097414761}
+  bCanJump: 1
+  jumpCoolDown: 0
+  jumpTimer: 0
+  jumpCounter: 1
+  maxJumpCounter: 1
+  moveSpeed: 6.5
+  fJumpForce: 17
+  sr: {fileID: 4452331233888646806}
+  canDodge: 1
+  canMove: 1
+  dodgeDuration: 0.2
+  dodgeCooldown: 1.5
+  dodgeTimer: 0
+  dodgeLayers:
+  - serializedVersion: 2
+    m_Bits: 1024
+  - serializedVersion: 2
+    m_Bits: 64
+  - serializedVersion: 2
+    m_Bits: 2048
+  debugColor: 0
+  isOnPlatform: 0
+  comp: 0.88
+  rayX: 0.5
+  sprite: {fileID: 4452331233888646806}
+  platformTimer: 0.3
 --- !u!114 &4452331232223267530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 50
+  arrowText: {fileID: 0}
   lineRenderer: {fileID: 4452331232223267529}
   projectilePrefab: {fileID: 4151597363687864255, guid: 5e23ecd836126ca4d9b0c5613042bdf2, type: 3}
   maxDistance: 1000

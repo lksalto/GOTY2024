@@ -172,7 +172,6 @@ public class EnemyBoar : MonoBehaviour
                 PlayerLife pLife = collision.gameObject.GetComponent<PlayerLife>();
                 if (pLife.canBeHit)
                 {
-                    Debug.Log("DAMAGE = " + dmg);
                     pLife.TakeHit(dmg);
                     pLife.canBeHit = false;
                 }

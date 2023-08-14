@@ -8,7 +8,6 @@ public class BreakableWall : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<EnemyBoar>() != null)
         {
-            Debug.Log(Mathf.Abs(collision.gameObject.GetComponent<Rigidbody2D>().velocity.x));
             if (Mathf.Abs(collision.gameObject.GetComponent<Rigidbody2D>().velocity.x) > 2.5f)
             {
                 collision.gameObject.GetComponent<EnemyBoar>().RechargeAttack(collision.gameObject.GetComponent<EnemyBoar>().atkCooldown);

@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using JetBrains.Annotations;
 
 public class PlayerShoot : MonoBehaviour
 {
     [SerializeField] float bulletSpeed = 50;
-
+    [SerializeField] TextMeshProUGUI arrowText;
     public LineRenderer lineRenderer;
     public GameObject projectilePrefab;
     public float maxDistance = 100f;
@@ -23,6 +25,7 @@ public class PlayerShoot : MonoBehaviour
         showLine = true;
         lineRenderer.enabled = false;
         arrowCount = maxArrows;
+        arrowText.text = arrowCount.ToString() + "/" + maxArrows.ToString();
     }
 
     void Update()
@@ -55,6 +58,7 @@ public class PlayerShoot : MonoBehaviour
                     
                 }
                 arrowCount--;
+                ShowArrowCount();
             }
             StartCoroutine(DestroyLineRenderer());
 
@@ -129,6 +133,21 @@ public class PlayerShoot : MonoBehaviour
     {
         yield return new WaitForSeconds(0f);
         lineRenderer.enabled = false;
+    }
+
+    public int GetAmmo()
+    {
+        return arrowCount;
+    }
+    public void SetAmmo(int qtt)
+    {
+        int max = maxArrows;
+        arrowCount = max;
+        ShowArrowCount();
+    }
+    public void ShowArrowCount()
+    {
+        arrowText.text = arrowCount.ToString() + "/" + maxArrows.ToString();
     }
 
 }

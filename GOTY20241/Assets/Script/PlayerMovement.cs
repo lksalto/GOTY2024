@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] int maxJumpCounter = 1;
     public float moveSpeed = 5;
     public float fJumpForce = 5;
-
+    float initialGravityScale;
     float moveDirection;
 
     Rigidbody2D rb;
@@ -57,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         myPlayer = gameObject;
         jumpTimer = jumpCoolDown;
         rb = GetComponent<Rigidbody2D>();
+        initialGravityScale = rb.gravityScale;
         cc2d = GetComponent<CapsuleCollider2D>();
         handsSprites = hands.GetComponent<SpriteRenderer>();
         pLife = GetComponent<PlayerLife>();
@@ -204,9 +205,9 @@ public class PlayerMovement : MonoBehaviour
         canMove = false;
         rb.gravityScale = 0;
         rb.velocity = new Vector2(rb.velocity.x, 0);
-        rb.AddForce(new Vector2(moveDirection, 0) * fJumpForce/1.1f, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(moveDirection, 0) * fJumpForce*2f, ForceMode2D.Impulse);
         yield return new WaitForSeconds(dodgeDuration);
-        rb.gravityScale = 1;
+        rb.gravityScale = initialGravityScale;
         sr.color = Color.white;
         canMove = true;
         pLife.canBeHit = true;
