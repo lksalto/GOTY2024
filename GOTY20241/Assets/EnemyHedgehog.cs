@@ -71,4 +71,7 @@ public class EnemyHedgehog : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         player.canMove = true;
     }
+
+    
+
 }
