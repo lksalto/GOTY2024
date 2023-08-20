@@ -131,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
             if (hit.collider.CompareTag("Floor"))
             {
 
-                if (transform.position.y > hit.collider.transform.position.y)
+                if (transform.position.y > hit.point.y)
                     isGrounded = true;
             }
             if(hit.collider.CompareTag("Platform"))
@@ -151,7 +151,7 @@ public class PlayerMovement : MonoBehaviour
             RaycastHit2D hitL = hitsL[i];
             if (hitL.collider.CompareTag("Floor") || hitL.collider.CompareTag("Platform"))
             {
-                if (transform.position.y > hitL.collider.transform.position.y + hitL.collider.transform.localScale.y / 2)
+                if (transform.position.y > hitL.point.y)
                     isGrounded = true;
 
             }
@@ -162,7 +162,7 @@ public class PlayerMovement : MonoBehaviour
             if (hitR.collider.CompareTag("Floor") || hitR.collider.CompareTag("Platform"))
             {
 
-            if (transform.position.y > hitR.collider.transform.position.y + hitR.collider.transform.localScale.y / 2)
+            if (transform.position.y > hitR.point.y)
                     isGrounded = true;
 
             }
@@ -196,16 +196,22 @@ public class PlayerMovement : MonoBehaviour
         canDodge = true;
     }
 
+
+
     IEnumerator Dodge()
     {
         pLife.canBeHit = false;
         Physics2D.IgnoreLayerCollision(10, 6, true);
         Physics2D.IgnoreLayerCollision(10, 11, true);
         sr.color = Color.yellow;
-        canMove = false;
-        rb.gravityScale = 0;
-        rb.velocity = new Vector2(rb.velocity.x, 0);
-        rb.AddForce(new Vector2(moveDirection, 0) * fJumpForce*2f, ForceMode2D.Impulse);
+        if(bCanJump)
+        {
+            canMove = false;
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.AddForce(new Vector2(moveDirection, 0) * fJumpForce * 2f, ForceMode2D.Impulse);
+        }
+        
         yield return new WaitForSeconds(dodgeDuration);
         rb.gravityScale = initialGravityScale;
         sr.color = Color.white;
@@ -227,10 +233,10 @@ public class PlayerMovement : MonoBehaviour
         hands.GetComponent<SpriteRenderer>().sprite = armDisarm[1];
         dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
+        rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         rotationZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         hands.transform.rotation = rotation;
-        handsSprites.flipX = (angle > 90 || angle < -90);
+        //handsSprites.flipy = (angle > 90 || angle < -90);
     }
 
     private void Disarm()
@@ -239,7 +245,7 @@ public class PlayerMovement : MonoBehaviour
         sr.sprite = playerSprites[0];
         hands.GetComponent<SpriteRenderer>().sprite = armDisarm[0];
         dir = Vector2.down;
-        angle = -90 * Mathf.Rad2Deg;
+        angle = Mathf.Rad2Deg;
         rotation = Quaternion.AngleAxis(angle,new Vector3(0,0,1));
         angleAim = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         dirAim = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
